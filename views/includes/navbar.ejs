@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/"><i class="fa-regular fa-compass"></i> WanderLust</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav me-auto">
+        <a class="nav-link" href="/listings">All Listings</a>
+        <% if(typeof currentUser !== 'undefined' && currentUser) { %>
+          <a class="nav-link" href="/listings/new">Add New Listing</a>
+          <a class="nav-link" href="/bookings/my">My Bookings</a>
+        <% } %>
+      </div>
+
+      <form class="d-flex me-3" role="search" method="GET" action="/listings">
+        <input
+          class="form-control me-2"
+          type="search"
+          name="search"
+          placeholder="Search listings..."
+          aria-label="Search"
+          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+        />
+        <button class="btn btn-outline-dark" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <div class="navbar-nav">
+        <% if(typeof currentUser !== 'undefined' && currentUser) { %>
+          <span class="nav-link text-muted">
+            <i class="fa-solid fa-user"></i> <%= currentUser.firstName %>
+          </span>
+          <form method="POST" action="/logout" class="d-inline">
+            <button class="btn btn-outline-dark btn-sm nav-btn">Log Out</button>
+          </form>
+        <% } else { %>
+          <a class="nav-link" href="/login">Log In</a>
+          <a class="btn btn-dark btn-sm nav-btn" href="/register">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

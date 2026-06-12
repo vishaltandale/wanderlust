@@ -1,0 +1,104 @@
+<% layout('layouts/boilerplate') -%>
+
+<h3 class="mb-4">
+    <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+        Search results for "<%= searchQuery %>"
+    <% } else { %>
+        All Listings
+    <% } %>
+</h3>
+
+<!-- Filter Bar -->
+<div class="card mb-4 filter-card">
+    <div class="card-body py-3">
+        <form method="GET" action="/listings" class="row g-2 align-items-end">
+            <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                <input type="hidden" name="search" value="<%= searchQuery %>" />
+            <% } %>
+
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Category</label>
+                <select name="category" class="form-select form-select-sm">
+                    <option value="">All Categories</option>
+                    <% for(let cat of categories) { %>
+                        <option value="<%= cat %>" <%= (typeof selectedCategory !== 'undefined' && selectedCategory === cat) ? 'selected' : '' %>><%= cat %></option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Min Price</label>
+                <input type="number" name="minPrice" class="form-control form-control-sm" placeholder="0"
+                    value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>" min="0" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Max Price</label>
+                <input type="number" name="maxPrice" class="form-control form-control-sm" placeholder="Any"
+                    value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>" min="0" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Sort By</label>
+                <select name="sort" class="form-select form-select-sm">
+                    <option value="" <%= (typeof sort !== 'undefined' && sort === '') ? 'selected' : '' %>>Default</option>
+                    <option value="price_low" <%= (typeof sort !== 'undefined' && sort === 'price_low') ? 'selected' : '' %>>Price: Low to High</option>
+                    <option value="price_high" <%= (typeof sort !== 'undefined' && sort === 'price_high') ? 'selected' : '' %>>Price: High to Low</option>
+                    <option value="newest" <%= (typeof sort !== 'undefined' && sort === 'newest') ? 'selected' : '' %>>Newest First</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-dark btn-sm flex-grow-1">
+                    <i class="fa-solid fa-filter"></i> Filter
+                </button>
+                <a href="/listings" class="btn btn-outline-dark btn-sm">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Category Pills (quick filter) -->
+<div class="category-pills mb-4">
+    <a href="/listings" class="pill <%= (typeof selectedCategory !== 'undefined' && selectedCategory === '') ? 'active' : '' %>">All</a>
+    <% for(let cat of categories) { %>
+        <a href="/listings?category=<%= cat %>"
+           class="pill <%= (typeof selectedCategory !== 'undefined' && selectedCategory === cat) ? 'active' : '' %>">
+            <%= cat %>
+        </a>
+    <% } %>
+</div>
+
+<% if (allListings.length === 0) { %>
+    <div class="text-center py-5">
+        <i class="fa-solid fa-magnifying-glass text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">No listings found matching your criteria.</p>
+        <a href="/listings" class="btn btn-outline-dark">View All Listings</a>
+    </div>
+<% } else { %>
+    <p class="text-muted mb-3"><%= allListings.length %> listing<%= allListings.length !== 1 ? 's' : '' %> found</p>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+        <% for(let listing of allListings) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+            <div class="card col listing-card">
+                <img
+                    src="<%= listing.image.url %>"
+                    class="card-img-top"
+                    alt="listing_image"
+                    style="height: 20rem; object-fit: cover;">
+                <% if(listing.category) { %>
+                    <span class="category-tag"><%= listing.category %></span>
+                <% } %>
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <b><%= listing.title %></b><br />
+                        <i class="fa-solid fa-location-dot text-muted small"></i> <%= listing.location %><br />
+                        &#8377;<%= listing.price.toLocaleString("en-IN") %> /night
+                    </p>
+                </div>
+            </div>
+        </a>
+        <% } %>
+    </div>
+<% } %>

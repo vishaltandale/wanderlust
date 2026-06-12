@@ -1,0 +1,79 @@
+<% layout('layouts/boilerplate') -%>
+
+<div class="row mt-3">
+    <div class="col-10 offset-1">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>My Bookings</h3>
+            <a href="/listings" class="btn btn-outline-dark">Browse Listings</a>
+        </div>
+
+        <% if (bookings.length === 0) { %>
+            <div class="text-center py-5">
+                <i class="fa-solid fa-calendar-xmark text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-3">You have no bookings yet.</p>
+                <a href="/listings" class="btn btn-dark">Find a Place to Stay</a>
+            </div>
+        <% } else { %>
+            <div class="row g-4">
+                <% for(let booking of bookings) { %>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card booking-card h-100">
+                        <% if(booking.listing) { %>
+                            <img src="<%= booking.listing.image.url %>"
+                                class="card-img-top booking-img"
+                                alt="<%= booking.listing.title %>"
+                            />
+                        <% } %>
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <% if(booking.listing) { %>
+                                    <a href="/listings/<%= booking.listing._id %>" class="text-decoration-none text-dark">
+                                        <%= booking.listing.title %>
+                                    </a>
+                                <% } else { %>
+                                    <span class="text-muted">Listing removed</span>
+                                <% } %>
+                            </h6>
+                            <% if(booking.listing) { %>
+                                <small class="text-muted">
+                                    <i class="fa-solid fa-location-dot"></i> <%= booking.listing.location %>, <%= booking.listing.country %>
+                                </small>
+                            <% } %>
+                            <hr />
+                            <p class="card-text mb-1">
+                                <i class="fa-solid fa-calendar-check text-success"></i>
+                                <strong>Check-in:</strong> <%= booking.checkIn.toLocaleDateString() %>
+                            </p>
+                            <p class="card-text mb-1">
+                                <i class="fa-solid fa-calendar-xmark text-danger"></i>
+                                <strong>Check-out:</strong> <%= booking.checkOut.toLocaleDateString() %>
+                            </p>
+                            <p class="card-text mb-1">
+                                <i class="fa-solid fa-users"></i>
+                                <strong>Guests:</strong> <%= booking.guestCount %>
+                            </p>
+                            <p class="card-text">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                <strong>Total:</strong> &#8377;<%= booking.totalPrice.toLocaleString("en-IN") %>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span class="badge <%= booking.status === 'confirmed' ? 'bg-success' : 'bg-secondary' %>">
+                                    <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                </span>
+                                <% if(booking.status === 'confirmed') { %>
+                                    <form method="POST" action="/bookings/<%= booking._id %>/cancel">
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</div>

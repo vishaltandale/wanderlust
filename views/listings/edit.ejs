@@ -1,0 +1,94 @@
+<% layout('layouts/boilerplate') -%>
+
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+        <h3>Edit Listing</h3>
+        <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" enctype="multipart/form-data" novalidate class="needs-validation">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input
+                    name="listing[title]"
+                    value="<%= listing.title %>"
+                    type="text"
+                    class="form-control"
+                    required>
+                <div class="invalid-feedback">Please enter a title.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                    name="listing[description]"
+                    class="form-control"
+                    required
+                    rows="3"><%= listing.description %></textarea>
+                <div class="invalid-feedback">Please enter a description.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Current Image</label>
+                <div>
+                    <img src="<%= listing.image.url %>" alt="Current image" class="img-thumbnail" style="max-height: 150px;" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Replace Image (optional)</label>
+                <input
+                    name="listing[image]"
+                    type="file"
+                    class="form-control"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                />
+                <div class="form-text">Leave empty to keep current image. Max 5MB.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select name="listing[category]" class="form-select" id="category">
+                    <% for(let cat of categories) { %>
+                        <option value="<%= cat %>" <%= listing.category === cat ? 'selected' : '' %>><%= cat %></option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label for="price" class="form-label">Price per night (&#8377;)</label>
+                    <input
+                        name="listing[price]"
+                        value="<%= listing.price %>"
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        required>
+                    <div class="invalid-feedback">Please enter a valid price.</div>
+                </div>
+
+                <div class="mb-3 col-md-8">
+                    <label for="country" class="form-label">Country</label>
+                    <input
+                        name="listing[country]"
+                        value="<%= listing.country %>"
+                        type="text"
+                        class="form-control"
+                        required>
+                    <div class="invalid-feedback">Please enter the country.</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input
+                    name="listing[location]"
+                    value="<%= listing.location %>"
+                    type="text"
+                    class="form-control"
+                    required>
+                <div class="invalid-feedback">Please enter the location.</div>
+            </div>
+
+            <button type="submit" class="btn btn-dark edit-btn mt-3">Update Listing</button>
+        </form>
+    </div>
+</div>
